@@ -1,5 +1,5 @@
 # We are basing our builder image on openshift base-centos7 image
-FROM image-registry.openshift-image-registry.svc:5000/openshift/python
+FROM quay.io/wildfly/wildfly-centos7
 
 # Inform users who's the maintainer of this builder image
 MAINTAINER Maciej Szulik <maszulik@redhat.com>
@@ -16,13 +16,13 @@ LABEL io.k8s.description="Platform for serving static HTML files" \
 USER root
 
 # Enable epel repository for lighttpd
-#RUN yum install -y epel-release
+RUN yum install -y epel-release
 
 # Import the EPEL GPG-key
-#RUN rpm --import /etc/pki/rpm-gpg/RPM-GPG-KEY-EPEL-7
+RUN rpm --import /etc/pki/rpm-gpg/RPM-GPG-KEY-EPEL-7
 
 # Update the repositories
-#RUN yum -y update
+RUN yum -y update
 
 # Install the required software, namely Lighttpd and
 RUN yum install -y lighttpd && \
