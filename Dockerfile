@@ -1,5 +1,5 @@
 # We are basing our builder image on openshift base-centos7 image
-FROM openshift/base-centos7
+FROM image-registry.openshift-image-registry.svc:5000/openshift/python
 
 # Inform users who's the maintainer of this builder image
 MAINTAINER Maciej Szulik <maszulik@redhat.com>
@@ -25,11 +25,12 @@ RUN yum -y update
 # Install the required software, namely Lighttpd and
 RUN yum install -y lighttpd && \
     # clean yum cache files, as they are not needed and will only make the image bigger in the end
+    yum install -y nginx \
     yum clean all -y
 
 # Copy the S2I scripts to /usr/libexec/s2i which is the location set for scripts
 # in openshift/base-centos7 as io.openshift.s2i.scripts-url label
-COPY ./s2i/bin/ /usr/libexec/s2i
+COPY ./.s2i/bin/ /usr/libexec/s2i
 
 # Copy the lighttpd configuration file
 COPY ./etc/ /opt/app-root/etc
@@ -44,4 +45,4 @@ USER 1001
 EXPOSE 8080
 
 # Set the default CMD to print the usage of the image, if somebody does docker run
-CMD ["/usr/libexec/s2i/usage"]
+CMD ["/usr/libexec/s2i/run"]
